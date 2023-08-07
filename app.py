@@ -14,4 +14,10 @@ model = tf.keras.models.load_model('meta_learner_model.h5')
 app = FastAPI()
 
 class request_body(BaseModel):
+    with open('data.txt', 'r') as file:
+        contenu_variable = file.read()
+        contenu_variable = contenu_variable.replace(",", " ")
+    print(contenu_variable)
+
+
 
