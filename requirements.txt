@@ -3,4 +3,4 @@ pandas
 tensorflow
 fastapi
 uvicorn
-sklearn
+
