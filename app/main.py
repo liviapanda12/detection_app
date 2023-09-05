@@ -1,23 +1,20 @@
+#Importation des modules
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from fastapi import FastAPI, HTTPException
-import json
 from pydantic import BaseModel
+import json
 
-
-#chargement du modèle
-model_meta = tf.keras.models.load_model('modele/rna_model.h5')
 
 # Création d'une nouvelle instance FastAPI
 app = FastAPI()
-'''
-with open('data.txt', 'r') as file:
-        contenu_variable = file.read()
-        contenu_variable = contenu_variable.replace(" ", "")
-        print(contenu_variable)
-'''
 
+#Chargement du modèle
+model_meta = tf.keras.models.load_model('rna_model1.h5')
+
+
+#Définir les paramètres de notre objet JSON
 class request_body(BaseModel):
    DstPort: int
    Protocol: int
@@ -53,8 +50,19 @@ class request_body(BaseModel):
    IdleMax: float
    IdleMin: float
 
+#Page d'acceuil
+@app.get("/")
+def home():
+   return "Hello, bienvenue sur l'API de détection d'intrusion"
+
+#Prédiction des données réçues
 @app.post("/predict/")
 async def predict(data: request_body):
-   df = pd.DataFrame([data.dict().values()], columns=data.dict().keys())
+   df = pd.DataFrame([data.dict()])
+   print("la valeur de df", df)
+   # Prétraitement des données si nécessaire
+   # df = preprocess_data(df)
    pred = model_meta.predict(df)
-   return {"prediction": int(pred)}
+   pred_def = float(pred[0][0])
+   print("type de données de pred", type(pred))
+   return pred_def
